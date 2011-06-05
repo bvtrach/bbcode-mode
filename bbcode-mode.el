@@ -1,7 +1,9 @@
 ;;; bbcode-mode.el --- Major mode to edit bbcode files in Emacs
 ;;
 ;; Author: Jason F. McBrayer
+;; Some code by: Bogdan Trach
 ;; Created: April, 2008
+;; Updated: June, 2011
 ;;
 ;;     This program is free software: you can redistribute it and/or modify
 ;;     it under the terms of the GNU General Public License as published by
@@ -65,7 +67,9 @@ if there is no region selected."
 just insert it if there is no region selected."
  (save-restriction 
    (if (and transient-mark-mode mark-active)
-       (let ((a (region-beginning)) (b (region-end)))
+       (let ((a (region-beginning)) 
+	     (b (region-end))
+	     (start (point)))
 	 (goto-char a)
 	 (dotimes (num (- (line-number-at-pos b) 
 			  (line-number-at-pos a) -1) value)
@@ -73,7 +77,8 @@ just insert it if there is no region selected."
 	   (next-line)
 	   (beginning-of-line))
 	 (previous-line))
-     (insert s))))
+     (insert s))
+   (goto-char start)))
 (defun bbcode-insert-italic ()
   "Insert italic tags, around the region if it exists."
   (interactive)
