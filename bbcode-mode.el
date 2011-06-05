@@ -110,17 +110,17 @@ just insert it if there is no region selected."
   (bbcode/wrap-or-insert "[spoiler=\"\"]" "[/spoiler]")
   (backward-char 10))
 (defun bbcode-insert-color ()
-  "Insert spoiler tags, around the region if it exists."
+  "Insert color tags, around the region if it exists."
   (interactive)
   (bbcode/wrap-or-insert "[color=\"\"]" "[/color]")
   (backward-char 8))
 (defun bbcode-insert-list ()
-  "Insert spoiler tags, around the region if it exists."
+  "Insert list tags, around the region if it exists."
   (interactive)
   (bbcode/wrap-or-insert "[list]" "[/list]")
   (backward-char 7))
 (defun bbcode-mark-list ()
-  "Insert spoiler tags, around the region if it exists."
+  "Insert list element tags, on each line in the region if it exists."
   (interactive)
   (bbcode/insert-line-beginning "  [*]"))
 
