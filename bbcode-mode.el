@@ -65,7 +65,7 @@ if there is no region selected."
 (defun bbcode/insert-line-beginning (s)
  "Insert the string s on the beginning of each line in the current region or 
 just insert it if there is no region selected."
- (save-restriction 
+ (save-excursion 
    (if (and transient-mark-mode mark-active)
        (let ((a (region-beginning)) 
 	     (b (region-end))
