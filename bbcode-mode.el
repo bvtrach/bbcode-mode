@@ -1,9 +1,9 @@
 ;;; bbcode-mode.el --- Major mode to edit bbcode files in Emacs
 ;;
 ;; Author: Jason F. McBrayer
-;; Some code by: Bogdan Trach
 ;; Created: April, 2008
-;; Updated: June, 2011
+;; Last-Updated: Sun June 5 12:31:20 2011
+;;           By: Bogdan Trach
 ;;
 ;;     This program is free software: you can redistribute it and/or modify
 ;;     it under the terms of the GNU General Public License as published by
