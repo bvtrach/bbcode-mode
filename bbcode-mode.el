@@ -39,7 +39,7 @@
    '("\\[I\\]\\[B\\].*?\\[/B\\]\\[/I\\]" . 'bbcode-bold-italic-face)   
    '("\\[I\\].*?\\[/I\\]" . 'bbcode-italic-face)
    '("\\[B\\].*?\\[/B\\]" . 'bbcode-bold-face)
-   '("\\[/?\\(I\\|B\\|URL\\|IMG\\|LIST\\|\\*\\|QUOTE\\|SPOILER\\|COLOR\\|ATTACH\\)[^]]*\\]" .
+   '("\\[/?\\(I\\|B\\|URL\\|IMG\\|LIST\\|\*\\|QUOTE\\|SPOILER\\|COLOR\\|ATTACH\\)[^]]*\\]" .
      'bbcode-keyword-face)
    )
   "Minimal highlighting expressions for bbcode mode")
