@@ -22,18 +22,26 @@
 ;; bbcode, typically when emacs(client) is called as an external
 ;; editor from a web browser.
 ;;
+(defgroup bbcode nil
+  "Support for the BBcode."
+  :group 'languages)
+
+(defcustom bbcode-main-format "b"
+  "Default tag for entry highlighting"
+  :group 'bbcode
+  :type 'string)
 
 (defvar bbcode-tag-table
   (list
    '("url" :opt-accept "C-c u" 2 "Link")
-   '("i" :no-opt "C-c i" 1 "Italic") 
+   '("i" :no-opt "C-c i" 1 "Italic")
    '("b" :no-opt "C-c b" 1 "Bold")
    '("qoute" :opt-accept "C-c q" 2 "Quote")
    '("image" :opt-accept "C-c m" 2 "Image")
    '("color" :opt-accept "C-c c" 2 "Color")
    '("spoiler" :opt-accept "C-c s" 2 "Spoiler")
-   '("r" :no-opt "C-c a r" 3 "Align right") 
-   '("center" :no-opt "C-c a c" 3 "Align center") 
+   '("r" :no-opt "C-c a r" 3 "Align right")
+   '("center" :no-opt "C-c a c" 3 "Align center")
    '("list" :no-opt "C-c l" 5 "List")
    '("table" :no-opt "C-c t t" 4 "Table")
    '("tr" :no-opt "C-c t r" 4 "Table row")
@@ -47,7 +55,7 @@
 (defconst bbcode-font-lock-keywords-1
   (list
    '("\\[B\\]\\[I\\].*?\\[/I\\]\\[/B\\]" . 'bold-italic)
-   '("\\[I\\]\\[B\\].*?\\[/B\\]\\[/I\\]" . 'bold-italic)   
+   '("\\[I\\]\\[B\\].*?\\[/B\\]\\[/I\\]" . 'bold-italic)
    '("\\[I\\].*?\\[/I\\]" . 'italic)
    '("\\[B\\].*?\\[/B\\]" . 'bold)
    '("\\[/?\\(I\\|TABLE\\|TD\\|TR\\|R\\|SIZE\\|CENTER\\|HTML\\|B\\|URL\\|IMG\\|LIST\\|\*\\|QUOTE\\|SPOILER\\|COLOR\\|ATTACH\\)[^]]*\\]" .
@@ -73,16 +81,22 @@ if there is no region selected."
        (insert s2))
    (insert s1 s2)))
 
+(defun bbcode-make-open-tag (tagname)
+  (concat "[" tagname "]"))
+
+(defun bbcode-make-close-tag (tagname)
+  (concat "[/" tagname "]"))
+
 (defun bbcode/insert-line-beginning (s)
- "Insert the string s on the beginning of each line in the current region or 
+ "Insert the string s on the beginning of each line in the current region or
 just insert it if there is no region selected."
- (save-excursion 
+ (save-excursion
    (if (and transient-mark-mode mark-active)
-       (let ((a (region-beginning)) 
+       (let ((a (region-beginning))
 	     (b (region-end))
 	     (start (point)))
 	 (goto-char a)
-	 (dotimes (num (- (line-number-at-pos b) 
+	 (dotimes (num (- (line-number-at-pos b)
 			  (line-number-at-pos a) -1) value)
 	   (insert s)
 	   (forward-line)
@@ -103,8 +117,8 @@ just insert it if there is no region selected."
 
 (defun bbcode-generic-input (tag)
   (interactive (list (read-from-minibuffer "Enter tag: ")) )
-  (let* ((s1 (concat "[" tag "]"))
-	 (s2 (concat "[/" tag "]"))
+  (let* ((s1 (bbcode-make-open-tag tag))
+	 (s2 (bbcode-make-close-tag tag))
 	 (l (length s2)))
     (bbcode/wrap-or-insert s1 s2)
     (backward-char l)))
@@ -185,6 +199,13 @@ just insert it if there is no region selected."
 	(delete-end (search-forward "]")))
     (delete-region delete-start delete-end)))
 
+(defun bbcode-format-desc-field ()
+  (interactive)
+  (beginning-of-line)
+  (insert (bbcode-make-open-tag bbcode-main-format))
+  (search-forward ": ")
+  (insert (bbcode-make-close-tag bbcode-main-format)))
+
 ;;; ----------------------------------------
 ;;; Mode definition
 (define-derived-mode bbcode-mode text-mode "bbcode"
@@ -218,6 +239,7 @@ just insert it if there is no region selected."
 (define-key bbcode-mode-map (kbd "C-c t t") 'bbcode-table-new)
 (define-key bbcode-mode-map (kbd "C-c t r") 'bbcode-table-row)
 (define-key bbcode-mode-map (kbd "C-c t c") 'bbcode-table-cell)
+(define-key bbcode-mode-map (kbd "C-c C-e f") 'bbcode-format-desc-field)
 
 (easy-menu-define my-menu bbcode-mode-map "DOC:bbcode menu map"
 		      '("BBCode"
