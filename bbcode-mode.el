@@ -85,7 +85,12 @@ if there is no region selected."
   (concat "[" tagname "]"))
 
 (defun bbcode-make-close-tag (tagname)
-  (concat "[/" tagname "]"))
+(let ((processed-tagname (car (split-string tagname "="))))
+  (concat "[/" processed-tagname "]")))
+
+(defun bbcode-line-empty-p ()
+  (interactive)
+  (equalp (line-end-position) (line-beginning-position)))
 
 (defun bbcode/insert-line-beginning (s)
  "Insert the string s on the beginning of each line in the current region or
@@ -98,9 +103,11 @@ just insert it if there is no region selected."
 	 (goto-char a)
 	 (dotimes (num (- (line-number-at-pos b)
 			  (line-number-at-pos a) -1) value)
-	   (insert s)
-	   (forward-line)
-	   (beginning-of-line))
+	   (if (bbcode-line-empty-p) (forward-line)
+	     (progn 
+	       (insert s)
+	       (forward-line)
+	       (beginning-of-line))))
 	 (forward-line -1))
      (let ((start (max (point) 3)))
        (beginning-of-line)
@@ -111,7 +118,8 @@ just insert it if there is no region selected."
 	 `(defun ,(intern (concat "bbcode-insert-" (eval tagname))) ()
 	    (let ((var ,(eval tagname)))
 	      (interactive)
-	      (bbcode/wrap-or-insert (concat "[" var "]") (concat "[/" var "]"))
+	      (bbcode/wrap-or-insert (bbcode-make-open-tag var) 
+				     (bbcode-make-close-tag var))
 	      (backward-char (+ 3 (length var)))
 	      )))
 
