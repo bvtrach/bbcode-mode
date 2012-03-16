@@ -92,27 +92,24 @@ if there is no region selected."
   (interactive)
   (equalp (line-end-position) (line-beginning-position)))
 
+(defun bbcode/insert-at-beginning-moving-forward (s)
+  (beginning-of-line)
+  (insert s)
+  (forward-line))
+
 (defun bbcode/insert-line-beginning (s)
- "Insert the string s on the beginning of each line in the current region or
+  "Insert the string s on the beginning of each line in the current region or
 just insert it if there is no region selected."
- (save-excursion
-   (if (and transient-mark-mode mark-active)
-       (let ((a (region-beginning))
-	     (b (region-end))
-	     (start (point)))
-	 (goto-char a)
-	 (dotimes (num (- (line-number-at-pos b)
-			  (line-number-at-pos a) -1) value)
-	   (if (bbcode-line-empty-p) (forward-line)
-	     (progn 
-	       (insert s)
-	       (forward-line)
-	       (beginning-of-line))))
-	 (forward-line -1))
-     (let ((start (max (point) 3)))
-       (beginning-of-line)
-       (insert s)
-       (goto-char (+ (length s) start))))))
+  (save-excursion
+    (if (and transient-mark-mode mark-active)
+	(let ((a (region-beginning))
+	      (b (line-number-at-pos (region-end))))
+	  (goto-char a)
+	  (while (< (line-number-at-pos (point)) b)
+	    (if (bbcode-line-empty-p)
+		(forward-line)
+	      (bbcode/insert-at-beginning-moving-forward s))))
+      (bbcode/insert-at-beginning-moving-forward s))))
 
  (defmacro bbcode-define-tag (tagname)
 	 `(defun ,(intern (concat "bbcode-insert-" (eval tagname))) ()
